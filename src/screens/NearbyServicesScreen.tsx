@@ -38,6 +38,54 @@ const mockServices: Service[] = [
       longitude: -99.1333,
     },
   },
+  {
+    id: '2',
+    name: 'Electricidad Pro',
+    category: 'Electricidad',
+    rating: 4.9,
+    distance: '0.8 km',
+    price: 'Desde $70',
+    location: {
+      latitude: 19.4327,
+      longitude: -99.1333,
+    },
+  },
+  {
+    id: '3',
+    name: 'Pintura Fácil',
+    category: 'Pintura',
+    rating: 4.7,
+    distance: '1.2 km',
+    price: 'Desde $100',
+    location: {
+      latitude: 19.4328,
+      longitude: -99.1334,
+    },
+  },
+  {
+    id: '4',
+    name: 'Jardinería Verde',
+    category: 'Jardinería',
+    rating: 4.6,
+    distance: '1.5 km',
+    price: 'Desde $80',
+    location: {
+      latitude: 19.4329,
+      longitude: -99.1335,
+    },
+  },
+  {
+    id: '5',
+    name: 'Cerrajería Segura',
+    category: 'Cerrajería',
+    rating: 4.5,
+    distance: '1.8 km',
+    price: 'Desde $90',
+    location: {
+      latitude: 19.4330,
+      longitude: -99.1336,
+    },
+  },
   // Add more mock services as needed
 ];
 

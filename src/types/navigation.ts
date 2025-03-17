@@ -16,39 +16,62 @@ export interface Service {
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
-  MainTabs: NavigatorScreenParams<MainTabParamList>;
-  ProviderTabs: NavigatorScreenParams<ProviderTabParamList>;
-  ServiceDetails: { service: Service };
-  Services: { category?: string };
-  NearbyServices: undefined;
-  Profile: undefined;
+  MainTabs: undefined;
+  ServiceDetails: {
+    service: {
+      id: string;
+      name: string;
+      provider: {
+        id: string;
+        name: string;
+        photo: string;
+        rating: number;
+      };
+      category: string;
+      price: string;
+      distance: string;
+      rating: number;
+    };
+  };
+  ServiceRequest: {
+    service: {
+      id: string;
+      name: string;
+      provider: {
+        id: string;
+        name: string;
+        photo: string;
+        rating: number;
+      };
+      category: string;
+      price: string;
+      distance: string;
+      rating: number;
+    };
+  };
   EditProfile: undefined;
   Addresses: undefined;
   PaymentMethods: undefined;
   Notifications: undefined;
   Settings: undefined;
-  ProviderHome: undefined;
-  ProviderProfile: undefined;
   ProviderServices: undefined;
   WorkSchedule: undefined;
   Earnings: undefined;
+  Services: {
+    category?: string;
+  };
 };
 
-export type MainTabParamList = {
+export type TabParamList = {
   Home: undefined;
-  NearbyServices: undefined;
-  Orders: undefined;
+  Services: undefined;
+  Bookings: undefined;
   Profile: undefined;
-};
-
-export type ProviderTabParamList = {
-  ProviderHome: undefined;
-  ProviderOrders: undefined;
-  ProviderProfile: undefined;
 };
 
 export type NavigationProps = {
   navigate: (screen: keyof RootStackParamList, params?: any) => void;
   goBack: () => void;
   setOptions: (options: any) => void;
+  reset: (options: { index: number; routes: { name: keyof RootStackParamList }[] }) => void;
 }; 

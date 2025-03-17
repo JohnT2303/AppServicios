@@ -15,18 +15,19 @@ type Category = {
   id: string;
   name: string;
   icon: keyof typeof MaterialIcons.glyphMap;
+  color: string;
 };
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
 
   const categories: Category[] = [
-    { id: '1', name: 'Plomería', icon: 'plumbing' },
-    { id: '2', name: 'Electricidad', icon: 'electrical-services' },
-    { id: '3', name: 'Carpintería', icon: 'handyman' },
-    { id: '4', name: 'Limpieza', icon: 'cleaning-services' },
-    { id: '5', name: 'Pintura', icon: 'format-paint' },
-    { id: '6', name: 'Jardinería', icon: 'yard' },
+    { id: '1', name: 'Plomería', icon: 'plumbing', color: '#2196F3' },
+    { id: '2', name: 'Electricidad', icon: 'electrical-services', color: '#FFC107' },
+    { id: '3', name: 'Carpintería', icon: 'handyman', color: '#795548' },
+    { id: '4', name: 'Limpieza', icon: 'cleaning-services', color: '#4CAF50' },
+    { id: '5', name: 'Pintura', icon: 'format-paint', color: '#9C27B0' },
+    { id: '6', name: 'Jardinería', icon: 'yard', color: '#8BC34A' },
   ];
 
   const renderCategoryItem = ({ item }: { item: Category }) => (
@@ -34,8 +35,8 @@ const HomeScreen: React.FC = () => {
       style={styles.categoryItem}
       onPress={() => navigation.navigate('Services', { category: item.name })}
     >
-      <View style={styles.categoryIcon}>
-        <MaterialIcons name={item.icon} size={32} color="#007AFF" />
+      <View style={[styles.categoryIcon, { backgroundColor: `${item.color}20` }]}>
+        <MaterialIcons name={item.icon} size={32} color={item.color} />
       </View>
       <Text style={styles.categoryName}>{item.name}</Text>
     </TouchableOpacity>
@@ -43,19 +44,6 @@ const HomeScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>¡Hola!</Text>
-          <Text style={styles.name}>Usuario</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.notificationButton}
-          onPress={() => {/* TODO: Implement notifications */}}
-        >
-          <MaterialIcons name="notifications" size={24} color="#333" />
-        </TouchableOpacity>
-      </View>
-
       <View style={styles.searchContainer}>
         <TouchableOpacity
           style={styles.searchBar}
@@ -75,50 +63,56 @@ const HomeScreen: React.FC = () => {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Servicios Cercanos</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('NearbyServices')}>
+          <Text style={styles.sectionTitle}>Servicios Destacados</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Services', {})}>
             <Text style={styles.seeAll}>Ver todos</Text>
           </TouchableOpacity>
         </View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={styles.nearbyServices}
+          style={styles.featuredServices}
         >
           {[1, 2, 3].map((item) => (
             <TouchableOpacity
               key={item}
-              style={styles.nearbyServiceCard}
+              style={styles.featuredServiceCard}
               onPress={() =>
                 navigation.navigate('ServiceDetails', {
                   service: {
                     id: item.toString(),
                     name: 'Servicio de Ejemplo',
-                    category: 'Categoría',
-                    rating: 4.5,
-                    distance: '0.5 km',
-                    price: 'Desde $50',
-                    location: {
-                      latitude: 19.4326,
-                      longitude: -99.1332,
+                    provider: {
+                      id: '1',
+                      name: 'Juan Pérez',
+                      rating: 4.8,
+                      photo: 'https://avatar.iran.liara.run/public/35',
                     },
+                    category: 'Categoría',
+                    price: 'Desde $50',
+                    distance: '0.5 km',
+                    rating: 4.5,
                   },
                 })
               }
             >
-              <View style={styles.nearbyServiceImage} />
-              <View style={styles.nearbyServiceInfo}>
-                <Text style={styles.nearbyServiceName}>
+              <Image
+                source={{ uri: 'https://placebeard.it/g/640/480' }}
+                style={styles.featuredServiceImage}
+              />
+              <View style={styles.featuredServiceInfo}>
+                <Text style={styles.featuredServiceName}>
                   Servicio de Ejemplo {item}
                 </Text>
-                <Text style={styles.nearbyServiceCategory}>Categoría</Text>
-                <View style={styles.nearbyServiceDetails}>
+                <Text style={styles.featuredServiceCategory}>Categoría</Text>
+                <View style={styles.featuredServiceDetails}>
                   <View style={styles.ratingContainer}>
                     <MaterialIcons name="star" size={16} color="#FFD700" />
                     <Text style={styles.rating}>4.5</Text>
                   </View>
                   <Text style={styles.distance}>0.5 km</Text>
                 </View>
+                <Text style={styles.price}>Desde $50</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -132,23 +126,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-  },
-  greeting: {
-    fontSize: 16,
-    color: '#666',
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  notificationButton: {
-    padding: 8,
   },
   searchContainer: {
     padding: 16,
@@ -195,7 +172,6 @@ const styles = StyleSheet.create({
   categoryIcon: {
     width: 64,
     height: 64,
-    backgroundColor: '#f0f0f0',
     borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
@@ -206,11 +182,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333',
   },
-  nearbyServices: {
+  featuredServices: {
     marginHorizontal: -16,
     paddingHorizontal: 16,
   },
-  nearbyServiceCard: {
+  featuredServiceCard: {
     width: 280,
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -221,29 +197,29 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  nearbyServiceImage: {
+  featuredServiceImage: {
     height: 160,
-    backgroundColor: '#f0f0f0',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
-  nearbyServiceInfo: {
+  featuredServiceInfo: {
     padding: 12,
   },
-  nearbyServiceName: {
+  featuredServiceName: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },
-  nearbyServiceCategory: {
+  featuredServiceCategory: {
     fontSize: 14,
     color: '#666',
     marginBottom: 8,
   },
-  nearbyServiceDetails: {
+  featuredServiceDetails: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 8,
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -251,12 +227,16 @@ const styles = StyleSheet.create({
   },
   rating: {
     marginLeft: 4,
-    fontSize: 14,
     color: '#666',
   },
   distance: {
     fontSize: 14,
     color: '#666',
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
   },
 });
 

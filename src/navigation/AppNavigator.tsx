@@ -14,6 +14,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import ProviderServicesScreen from '../screens/ProviderServicesScreen';
 import WorkScheduleScreen from '../screens/WorkScheduleScreen';
 import EarningsScreen from '../screens/EarningsScreen';
+import ServiceRequestScreen from '../screens/ServiceRequestScreen';
 import { RootStackParamList } from '../types/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -47,6 +48,7 @@ const AppNavigator = () => {
                         <Stack.Screen name="ProviderServices" component={ProviderServicesScreen} />
                         <Stack.Screen name="WorkSchedule" component={WorkScheduleScreen} />
                         <Stack.Screen name="Earnings" component={EarningsScreen} />
+                        <Stack.Screen name="ServiceRequest" component={ServiceRequestScreen} />
                     </>
                 )}
             </Stack.Navigator>

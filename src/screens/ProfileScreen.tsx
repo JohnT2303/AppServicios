@@ -6,43 +6,69 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProps } from '../types/navigation';
+import { useAuth } from '../contexts/AuthContext';
 
 const ProfileScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Cerrar Sesión',
+      '¿Estás seguro de que deseas cerrar sesión?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Cerrar Sesión',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            } catch (error) {
+              Alert.alert('Error', 'No se pudo cerrar sesión. Por favor, intenta de nuevo.');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const menuItems = [
     {
-      id: 'personal',
-      title: 'Información Personal',
       icon: 'person',
+      title: 'Editar Perfil',
       onPress: () => navigation.navigate('EditProfile'),
     },
     {
-      id: 'addresses',
-      title: 'Mis Direcciones',
       icon: 'location-on',
+      title: 'Mis Direcciones',
       onPress: () => navigation.navigate('Addresses'),
     },
     {
-      id: 'payment',
-      title: 'Métodos de Pago',
       icon: 'credit-card',
+      title: 'Métodos de Pago',
       onPress: () => navigation.navigate('PaymentMethods'),
     },
     {
-      id: 'notifications',
-      title: 'Notificaciones',
       icon: 'notifications',
+      title: 'Notificaciones',
       onPress: () => navigation.navigate('Notifications'),
     },
     {
-      id: 'settings',
-      title: 'Configuración',
       icon: 'settings',
+      title: 'Configuración',
       onPress: () => navigation.navigate('Settings'),
     },
   ];
@@ -50,28 +76,27 @@ const ProfileScreen: React.FC = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.profileImageContainer}>
+        <View style={styles.profileInfo}>
           <Image
-            source={{ uri: 'https://via.placeholder.com/100' }}
+            source={{ uri: 'https://avatar.iran.liara.run/public/boy?username=Scott' }}
             style={styles.profileImage}
           />
-          <TouchableOpacity style={styles.editImageButton}>
-            <MaterialIcons name="camera-alt" size={20} color="#fff" />
-          </TouchableOpacity>
+          <View style={styles.profileText}>
+            <Text style={styles.name}>{user?.name || 'Usuario'}</Text>
+            <Text style={styles.email}>{user?.email || 'usuario@email.com'}</Text>
+          </View>
         </View>
-        <Text style={styles.name}>Usuario</Text>
-        <Text style={styles.email}>usuario@ejemplo.com</Text>
       </View>
 
       <View style={styles.menuContainer}>
-        {menuItems.map((item) => (
+        {menuItems.map((item, index) => (
           <TouchableOpacity
-            key={item.id}
+            key={index}
             style={styles.menuItem}
             onPress={item.onPress}
           >
             <View style={styles.menuItemLeft}>
-              <MaterialIcons name={item.icon} size={24} color="#333" />
+              <MaterialIcons name={item.icon as any} size={24} color="#666" />
               <Text style={styles.menuItemText}>{item.title}</Text>
             </View>
             <MaterialIcons name="chevron-right" size={24} color="#666" />
@@ -79,8 +104,8 @@ const ProfileScreen: React.FC = () => {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.logoutButton}>
-        <MaterialIcons name="logout" size={24} color="#FF3B30" />
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <MaterialIcons name="logout" size={24} color="#F44336" />
         <Text style={styles.logoutText}>Cerrar Sesión</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -93,30 +118,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  profileImageContainer: {
-    position: 'relative',
-    marginBottom: 16,
+  profileInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginRight: 16,
   },
-  editImageButton: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#007AFF',
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+  profileText: {
+    flex: 1,
   },
   name: {
     fontSize: 24,
@@ -156,12 +174,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FF3B30',
+    borderColor: '#F44336',
   },
   logoutText: {
     fontSize: 16,
-    color: '#FF3B30',
+    color: '#F44336',
     marginLeft: 8,
+    fontWeight: 'bold',
   },
 });
 

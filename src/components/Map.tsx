@@ -8,7 +8,7 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({ style }) => {
   return (
     <View style={[{ backgroundColor: '#f0f0f0', justifyContent: 'center', alignItems: 'center' }, style]}>
-      <Text>Componente de mapa</Text>
+      <Text>Componente de mapa en desarrollooww</Text>
     </View>
   );
 };

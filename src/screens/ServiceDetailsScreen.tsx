@@ -6,17 +6,20 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Linking,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
-import { RootStackParamList, NavigationProps } from '../types/navigation';
-
-type ServiceDetailsScreenRouteProp = RouteProp<RootStackParamList, 'ServiceDetails'>;
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationProps } from '../types/navigation';
 
 const ServiceDetailsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
-  const route = useRoute<ServiceDetailsScreenRouteProp>();
-  const { service } = route.params;
+  const route = useRoute();
+  const { service } = route.params as any;
+
+  const handleContactProvider = () => {
+    navigation.navigate('ServiceRequest', { service });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -25,60 +28,77 @@ const ServiceDetailsScreen: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <MaterialIcons name="arrow-back" size={24} color="#000" />
+          <MaterialIcons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.title}>Detalles del Servicio</Text>
+        <Text style={styles.headerTitle}>Detalles del Servicios</Text>
       </View>
 
-      <View style={styles.serviceInfo}>
+      <View style={styles.providerSection}>
+        <View style={styles.providerHeader}>
+          <Image
+            source={{ uri: service.provider.photo }}
+            style={styles.providerPhoto}
+          />
+          <View style={styles.providerInfo}>
+            <Text style={styles.providerName}>{service.provider.name}</Text>
+            <View style={styles.ratingContainer}>
+              <MaterialIcons name="star" size={16} color="#FFD700" />
+              <Text style={styles.rating}>{service.provider.rating}</Text>
+            </View>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={styles.contactButton}
+          onPress={handleContactProvider}
+        >
+          <MaterialIcons name="phone" size={20} color="#fff" />
+          <Text style={styles.contactButtonText}>Contactar Proveedor</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.content}>
         <Text style={styles.serviceName}>{service.name}</Text>
-        <Text style={styles.serviceCategory}>{service.category}</Text>
-        
-        <View style={styles.ratingContainer}>
-          <MaterialIcons name="star" size={20} color="#FFD700" />
-          <Text style={styles.rating}>{service.rating}</Text>
+        <View style={styles.categoryContainer}>
+          <MaterialIcons name="category" size={16} color="#666" />
+          <Text style={styles.category}>{service.category}</Text>
         </View>
 
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailItem}>
-            <MaterialIcons name="location-on" size={20} color="#666" />
-            <Text style={styles.detailText}>{service.distance}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <MaterialIcons name="attach-money" size={20} color="#666" />
+        <View style={styles.detailsSection}>
+          <Text style={styles.sectionTitle}>Detalles del Servicio</Text>
+          <View style={styles.detailRow}>
+            <MaterialIcons name="attach-money" size={20} color="#007AFF" />
             <Text style={styles.detailText}>{service.price}</Text>
           </View>
-        </View>
-      </View>
-
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.sectionTitle}>Descripción</Text>
-        <Text style={styles.description}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </Text>
-      </View>
-
-      <View style={styles.servicesContainer}>
-        <Text style={styles.sectionTitle}>Servicios Ofrecidos</Text>
-        <View style={styles.serviceList}>
-          <View style={styles.serviceItem}>
-            <MaterialIcons name="check-circle" size={20} color="#4CAF50" />
-            <Text style={styles.serviceItemText}>Instalación y reparación</Text>
-          </View>
-          <View style={styles.serviceItem}>
-            <MaterialIcons name="check-circle" size={20} color="#4CAF50" />
-            <Text style={styles.serviceItemText}>Mantenimiento preventivo</Text>
-          </View>
-          <View style={styles.serviceItem}>
-            <MaterialIcons name="check-circle" size={20} color="#4CAF50" />
-            <Text style={styles.serviceItemText}>Diagnóstico especializado</Text>
+          <View style={styles.detailRow}>
+            <MaterialIcons name="location-on" size={20} color="#007AFF" />
+            <Text style={styles.detailText}>{service.distance}</Text>
           </View>
         </View>
-      </View>
 
-      <TouchableOpacity style={styles.contactButton}>
-        <Text style={styles.contactButtonText}>Contactar al Proveedor</Text>
-      </TouchableOpacity>
+        <View style={styles.descriptionSection}>
+          <Text style={styles.sectionTitle}>Descripción</Text>
+          <Text style={styles.description}>
+            Servicio profesional de {service.category.toLowerCase()} con años de experiencia.
+            Ofrecemos soluciones rápidas y eficientes para todas tus necesidades.
+          </Text>
+        </View>
+
+        <View style={styles.availabilitySection}>
+          <Text style={styles.sectionTitle}>Disponibilidad</Text>
+          <View style={styles.availabilityRow}>
+            <MaterialIcons name="schedule" size={20} color="#007AFF" />
+            <Text style={styles.detailText}>Lun - Vie: 8:00 - 20:00</Text>
+          </View>
+          <View style={styles.availabilityRow}>
+            <MaterialIcons name="schedule" size={20} color="#007AFF" />
+            <Text style={styles.detailText}>Sáb: 9:00 - 18:00</Text>
+          </View>
+          <View style={styles.availabilityRow}>
+            <MaterialIcons name="schedule" size={20} color="#007AFF" />
+            <Text style={styles.detailText}>Dom: 9:00 - 14:00</Text>
+          </View>
+        </View>
+      </View>
     </ScrollView>
   );
 };
@@ -92,17 +112,66 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
   backButton: {
-    marginRight: 16,
+    padding: 8,
+    marginRight: 8,
   },
-  title: {
+  headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
   },
-  serviceInfo: {
+  providerSection: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  providerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  providerPhoto: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 12,
+  },
+  providerInfo: {
+    flex: 1,
+  },
+  providerName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rating: {
+    marginLeft: 4,
+    color: '#666',
+  },
+  contactButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#007AFF',
+    padding: 12,
+    borderRadius: 8,
+  },
+  contactButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  content: {
     padding: 16,
   },
   serviceName: {
@@ -110,79 +179,49 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  serviceCategory: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 16,
-  },
-  ratingContainer: {
+  categoryContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-  rating: {
-    fontSize: 16,
-    marginLeft: 4,
-    color: '#666',
-  },
-  detailsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#666',
+  category: {
     marginLeft: 8,
+    fontSize: 16,
+    color: '#666',
   },
-  descriptionContainer: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
+  detailsSection: {
+    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
   },
-  description: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
-  },
-  servicesContainer: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  serviceList: {
-    marginTop: 8,
-  },
-  serviceItem: {
+  detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
-  serviceItemText: {
-    fontSize: 14,
-    color: '#666',
+  detailText: {
     marginLeft: 8,
-  },
-  contactButton: {
-    backgroundColor: '#007AFF',
-    margin: 16,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  contactButtonText: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#333',
+  },
+  descriptionSection: {
+    marginBottom: 24,
+  },
+  description: {
+    fontSize: 16,
+    color: '#666',
+    lineHeight: 24,
+  },
+  availabilitySection: {
+    marginBottom: 24,
+  },
+  availabilityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
 });
 

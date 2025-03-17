@@ -2,25 +2,18 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
-import NearbyServicesScreen from '../screens/NearbyServicesScreen';
-import OrdersScreen from '../screens/OrdersScreen';
+import ServicesScreen from '../screens/ServicesScreen';
+import BookingsScreen from '../screens/BookingsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import ProviderHomeScreen from '../screens/ProviderHomeScreen';
-import ProviderOrdersScreen from '../screens/ProviderOrdersScreen';
-import ProviderProfileScreen from '../screens/ProviderProfileScreen';
-import { useAuth } from '../contexts/AuthContext';
-import { MainTabParamList, ProviderTabParamList } from '../types/navigation';
+import { TabParamList } from '../types/navigation';
 
-const Tab = createBottomTabNavigator<MainTabParamList & ProviderTabParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator = () => {
-  const { user } = useAuth();
-
-  if (!user) return null;
-
   return (
     <Tab.Navigator
       screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: '#666',
         tabBarStyle: {
@@ -29,83 +22,42 @@ const TabNavigator = () => {
         },
       }}
     >
-      {user.role === 'client' ? (
-        <>
-          <Tab.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              title: 'Inicio',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialIcons name="home" size={size} color={color} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="NearbyServices"
-            component={NearbyServicesScreen}
-            options={{
-              title: 'Cercanos',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialIcons name="location-on" size={size} color={color} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Orders"
-            component={OrdersScreen}
-            options={{
-              title: 'Pedidos',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialIcons name="receipt" size={size} color={color} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{
-              title: 'Perfil',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialIcons name="person" size={size} color={color} />
-              ),
-            }}
-          />
-        </>
-      ) : (
-        <>
-          <Tab.Screen
-            name="ProviderHome"
-            component={ProviderHomeScreen}
-            options={{
-              title: 'Inicio',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialIcons name="home" size={size} color={color} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="ProviderOrders"
-            component={ProviderOrdersScreen}
-            options={{
-              title: 'Pedidos',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialIcons name="receipt" size={size} color={color} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="ProviderProfile"
-            component={ProviderProfileScreen}
-            options={{
-              title: 'Perfil',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialIcons name="person" size={size} color={color} />
-              ),
-            }}
-          />
-        </>
-      )}
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Services"
+        component={ServicesScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="search" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Bookings"
+        component={BookingsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="calendar-today" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="person" size={size} color={color} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
